@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace GraphicsProgrammingProject {
+namespace GraphicsProgrammingProject.Lessons {
 public class Lesson1 : Lesson {
     private VertexPositionColor[] vertices = {
         // FRONT

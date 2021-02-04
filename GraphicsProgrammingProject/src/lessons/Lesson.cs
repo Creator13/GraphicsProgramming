@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace GraphicsProgrammingProject
+namespace GraphicsProgrammingProject.Lessons
 {
 public abstract class Lesson
 {
