@@ -22,9 +22,9 @@ public class Game1 : Game {
         _graphics.PreferredBackBufferWidth = 750;
         _graphics.PreferredBackBufferHeight = 750;
         _graphics.ApplyChanges();
-        
+
         currentLesson.Initialize();
-        
+
         base.Initialize();
     }
 
