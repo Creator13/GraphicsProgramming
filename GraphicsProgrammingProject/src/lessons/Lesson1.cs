@@ -4,8 +4,11 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GraphicsProgrammingProject.Lessons {
+/**
+ * Rotating cube with rainbow colors :)
+ */
 public class Lesson1 : Lesson {
-    private VertexPositionColor[] vertices = {
+    private readonly VertexPositionColor[] vertices = {
         // FRONT
         new(new Vector3(-.5f, .5f, .5f), Color.Red),
         new(new Vector3(.5f, -.5f, .5f), Color.Green),
@@ -19,7 +22,7 @@ public class Lesson1 : Lesson {
         new(new Vector3(.5f, .5f, -.5f), Color.Yellow)
     };
 
-    private int[] indices = {
+    private readonly int[] indices = {
         // FRONT
         0, 1, 2,
         0, 3, 1,
@@ -67,7 +70,7 @@ public class Lesson1 : Lesson {
         }
     }
 
-    public override void LoadContent(ContentManager Content, GraphicsDeviceManager graphics, SpriteBatch spriteBatch) {
+    public override void LoadContent(ContentManager content, GraphicsDeviceManager graphics, SpriteBatch spriteBatch) {
         effect = new BasicEffect(graphics.GraphicsDevice);
     }
 }

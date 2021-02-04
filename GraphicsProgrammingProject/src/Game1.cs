@@ -6,22 +6,22 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GraphicsProgrammingProject {
 public class Game1 : Game {
-    private GraphicsDeviceManager _graphics;
+    private readonly GraphicsDeviceManager graphics;
+    private SpriteBatch spriteBatch;
 
-    private SpriteBatch _spriteBatch;
-    private Lesson currentLesson;
+    private readonly Lesson currentLesson;
 
     public Game1() {
-        _graphics = new GraphicsDeviceManager(this);
+        graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
         currentLesson = new Lesson1();
     }
 
     protected override void Initialize() {
-        _graphics.PreferredBackBufferWidth = 750;
-        _graphics.PreferredBackBufferHeight = 750;
-        _graphics.ApplyChanges();
+        graphics.PreferredBackBufferWidth = 750;
+        graphics.PreferredBackBufferHeight = 750;
+        graphics.ApplyChanges();
 
         currentLesson.Initialize();
 
@@ -29,15 +29,16 @@ public class Game1 : Game {
     }
 
     protected override void LoadContent() {
-        _spriteBatch = new SpriteBatch(GraphicsDevice);
+        spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        currentLesson.LoadContent(Content, _graphics, _spriteBatch);
+        currentLesson.LoadContent(Content, graphics, spriteBatch);
     }
 
     protected override void Update(GameTime gameTime) {
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-            Keyboard.GetState().IsKeyDown(Keys.Escape))
+            Keyboard.GetState().IsKeyDown(Keys.Escape)) {
             Exit();
+        }
 
         currentLesson.Update(gameTime);
 
@@ -45,7 +46,7 @@ public class Game1 : Game {
     }
 
     protected override void Draw(GameTime gameTime) {
-        currentLesson.Draw(gameTime, _graphics, _spriteBatch);
+        currentLesson.Draw(gameTime, graphics, spriteBatch);
 
         base.Draw(gameTime);
     }
