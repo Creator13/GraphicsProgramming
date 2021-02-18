@@ -1,4 +1,5 @@
 ﻿using System;
+using GraphicsProgramming;
 using GraphicsProgrammingProject.Lessons;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,7 +16,7 @@ public class Game1 : Game {
         graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
-        currentLesson = new Lesson1();
+        currentLesson = new Lesson2();
     }
 
     protected override void Initialize() {
