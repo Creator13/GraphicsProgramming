@@ -74,11 +74,16 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     perturbedNormal.rg += (normalColor.rg * 2 - 1);
     perturbedNormal = normalize(perturbedNormal);
     
+    float3 viewDirection = normalize(input.worldPos - CameraPosition);
     float3 lightDirection = normalize(input.worldPos - LightPosition);
+
+    float3 refl = normalize(-reflect(lightDirection, perturbedNormal));
+
+    float specular = pow(max(dot(refl, normalize(viewDirection)), 0.0), 8);
 
     float light = max(dot(perturbedNormal, -lightDirection), Ambient);
 
-    return float4(light * texColor.rgb, 1);
+    return float4((light + specular) * texColor.rgb, 1);
 }
 
 technique
