@@ -16,12 +16,12 @@ public class Game1 : Game {
         graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
-        currentLesson = new Lesson2();
+        currentLesson = new Lesson3();
     }
 
     protected override void Initialize() {
-        graphics.PreferredBackBufferWidth = 750;
-        graphics.PreferredBackBufferHeight = 750;
+        graphics.PreferredBackBufferWidth = 1280;
+        graphics.PreferredBackBufferHeight = 720;
         graphics.ApplyChanges();
 
         currentLesson.Initialize();
