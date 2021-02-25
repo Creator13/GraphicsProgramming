@@ -11,8 +11,9 @@ public class Lesson3 : Lesson {
     private Effect myEffect;
     private Vector3 lightPosition = Vector3.Right * 2 + Vector3.Up * 2 + Vector3.Backward * 2;
 
-    private Model sphere;
+    private Model sphere, cube;
     private Texture2D day, night, clouds, moon;
+    private TextureCube sky;
 
     private float yaw, pitch;
     private int prevX, prevY;
@@ -38,10 +39,17 @@ public class Lesson3 : Lesson {
         night = Content.Load<Texture2D>("Lesson3/night");
         clouds = Content.Load<Texture2D>("Lesson3/clouds");
         moon = Content.Load<Texture2D>("Lesson3/2k_moon");
+        sky = Content.Load<TextureCube>("Lesson3/sky_cube");
 
         sphere = Content.Load<Model>("Lesson3/uv_sphere");
-
         foreach (var mesh in sphere.Meshes) {
+            foreach (var meshPart in mesh.MeshParts) {
+                meshPart.Effect = myEffect;
+            }
+        }
+        
+        cube = Content.Load<Model>("Lesson3/cube");
+        foreach (var mesh in cube.Meshes) {
             foreach (var meshPart in mesh.MeshParts) {
                 meshPart.Effect = myEffect;
             }
@@ -71,6 +79,7 @@ public class Lesson3 : Lesson {
         myEffect.Parameters["NightTex"].SetValue(night);
         myEffect.Parameters["CloudsTex"].SetValue(clouds);
         myEffect.Parameters["MoonTex"].SetValue(moon);
+        myEffect.Parameters["SkyTex"].SetValue(sky);
 
         myEffect.Parameters["CameraPosition"].SetValue(cameraPos);
         myEffect.Parameters["LightPosition"].SetValue(lightPosition);
@@ -80,6 +89,14 @@ public class Lesson3 : Lesson {
         myEffect.CurrentTechnique.Passes[0].Apply();
 
         device.Clear(Color.Black);
+
+        // Sky
+        myEffect.CurrentTechnique = myEffect.Techniques["Sky"];
+        device.DepthStencilState = DepthStencilState.None;
+        device.RasterizerState = RasterizerState.CullNone;
+        RenderModel(cube, Matrix.CreateTranslation(cameraPos));
+        device.DepthStencilState = DepthStencilState.Default;
+        device.RasterizerState = RasterizerState.CullCounterClockwise;
 
         // Earth
         myEffect.CurrentTechnique = myEffect.Techniques["Earth"];

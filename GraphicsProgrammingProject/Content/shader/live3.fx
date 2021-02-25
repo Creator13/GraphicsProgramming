@@ -48,6 +48,17 @@ sampler2D MoonTextureSampler = sampler_state
     MagFilter = ANISOTROPIC;
 };
 
+TextureCube SkyTex;
+samplerCUBE SkyTextureSampler = sampler_state
+{
+    Texture = <SkyTex>;
+    MipFilter = POINT;
+    MinFilter = ANISOTROPIC;
+    MagFilter = ANISOTROPIC;
+    AddressU = Mirror;  // Dit zorgt ervoor dat de seams van de cube weggaan
+    AddressV = Mirror;
+};
+
 // Getting out vertex data from vertex shader to pixel shader
 struct VertexShaderOutput 
 {
@@ -96,7 +107,10 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 
     float3 diffuse = lerp(nightColor.rgb, texColor.rgb, light) + cloudsColor.rgb * light;
 
-    return float4((max(light, 0.15) + specular) * diffuse.rgb+ fresnel, 1);
+    float3 reflectedViewDir = reflect(viewDirection, input.worldNormal);
+    float3 skyReflection = texCUBE(SkyTextureSampler, reflectedViewDir).rgb;
+
+    return float4((max(light, 0.15) + specular) * diffuse.rgb + fresnel + skyReflection, 1);
 }
 
 float4 MoonPS(VertexShaderOutput input) : COLOR
@@ -111,6 +125,15 @@ float4 MoonPS(VertexShaderOutput input) : COLOR
     float light = max(dot(input.worldNormal, -lightDirection), 0.0);
 
     return float4((max(light, 0.15)) * texColor.rgb, 1);
+}
+
+float4 SkyPS(VertexShaderOutput input) : COLOR
+{
+    float3 viewDirection = normalize(input.worldPos - CameraPosition);
+
+    float3 skyColor = texCUBE(SkyTextureSampler, viewDirection).rgb;
+
+    return float4(pow(skyColor, 2), 1);
 }
 
 technique Earth
@@ -128,5 +151,14 @@ technique Moon
     {
         VertexShader = compile VS_SHADERMODEL MainVS();
         PixelShader = compile PS_SHADERMODEL MoonPS();
+    }
+};
+
+technique Sky
+{
+    pass
+    {
+        VertexShader = compile VS_SHADERMODEL MainVS();
+        PixelShader = compile PS_SHADERMODEL SkyPS();
     }
 };

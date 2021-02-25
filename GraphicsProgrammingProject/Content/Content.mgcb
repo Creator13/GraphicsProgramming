@@ -38,7 +38,7 @@
 /build:Lesson3/clouds.jpg
 
 #begin Lesson3/cube.obj
-/importer:OpenAssetImporter
+/importer:FbxImporter
 /processor:ModelProcessor
 /processorParam:ColorKeyColor=0,0,0,0
 /processorParam:ColorKeyEnabled=True
@@ -82,14 +82,7 @@
 
 #begin Lesson3/sky_cube.dds
 /importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
+/processor:PassThroughProcessor
 /build:Lesson3/sky_cube.dds
 
 #begin Lesson3/uv_sphere.fbx
