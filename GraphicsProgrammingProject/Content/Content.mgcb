@@ -194,6 +194,18 @@
 /processorParam:TextureFormat=Color
 /build:texture/grass.jpg
 
+#begin texture/plant.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:texture/plant.png
+
 #begin texture/rock.jpg
 /importer:TextureImporter
 /processor:TextureProcessor

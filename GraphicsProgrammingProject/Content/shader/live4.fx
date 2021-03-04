@@ -171,6 +171,24 @@ float4 SkyPS(VertexShaderOutput input) : COLOR
     return float4(lerp(bottomColor, topColor, viewDirection.y) + sun * sunColor, 1);
 }
 
+float4 UnlitTransparentPS(VertexShaderOutput input) : COLOR 
+{
+    float4 texColor = tex2D(GrassTextureSampler, input.tex);
+
+    clip (texColor.a - .5);
+
+    return texColor;
+}
+
+technique UnlitTransparent
+{
+    pass
+    {
+        VertexShader = compile VS_SHADERMODEL MainVS();
+        PixelShader = compile PS_SHADERMODEL UnlitTransparentPS();
+    }
+};
+
 technique Terrain
 {
     pass

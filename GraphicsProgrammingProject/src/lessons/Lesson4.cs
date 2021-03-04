@@ -11,9 +11,9 @@ namespace GraphicsProgramming
 class Lesson4 : Lesson
 {
     private Effect effect;
-    private Texture2D heightmap, underwater, dirt, grass, rock, snow, dirt_norm, dirt_spec, water, foam, waterNormal;
+    private Texture2D heightmap, underwater, dirt, grass, rock, snow, plant, dirt_norm, dirt_spec, water, foam, waterNormal;
     private TextureCube sky;
-    private Model cube;
+    private Model cube, sphere;
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct Vert : IVertexType
@@ -70,7 +70,17 @@ class Lesson4 : Lesson
         grass = Content.Load<Texture2D>("texture/grass");
         rock = Content.Load<Texture2D>("texture/rock");
         snow = Content.Load<Texture2D>("texture/snow");
+        plant = Content.Load<Texture2D>("texture/plant");
         // sky = Content.Load<TextureCube>("testcube");
+
+        sphere = Content.Load<Model>("Lesson3/uv_sphere");
+        foreach (ModelMesh mesh in sphere.Meshes)
+        {
+            foreach (ModelMeshPart meshPart in mesh.MeshParts)
+            {
+                meshPart.Effect = effect;
+            }
+        }
 
         cube = Content.Load<Model>("Lesson3/cube");
         foreach (ModelMesh mesh in cube.Meshes)
@@ -264,6 +274,23 @@ class Lesson4 : Lesson
         effect.CurrentTechnique.Passes[0].Apply();
         device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertices, 0, vertices.Length, indices, 0,
             indices.Length / 3);
+
+        // Render sphere with transparent technique
+        // device.BlendState = BlendState.AlphaBlend;
+        effect.CurrentTechnique = effect.Techniques["UnlitTransparent"];
+        
+        effect.Parameters["GrassTex"].SetValue(plant);
+        
+        device.RasterizerState = RasterizerState.CullNone;
+        RenderModel(sphere,
+            World * Matrix.CreateTranslation(Vector3.Right * 512 - Vector3.Forward * 512 + Vector3.Up * 200));
+        
+        // device.RasterizerState = RasterizerState.CullCounterClockwise;
+        // RenderModel(sphere,
+        //     World * Matrix.CreateTranslation(Vector3.Right * 512 - Vector3.Forward * 512 + Vector3.Up * 200));
+        
+        device.BlendState = BlendState.Opaque;
+        device.RasterizerState = RasterizerState.CullCounterClockwise;
     }
 
     void RenderModel(Model m, Matrix parentMatrix)
@@ -275,7 +302,7 @@ class Lesson4 : Lesson
 
         foreach (ModelMesh mesh in m.Meshes)
         {
-            effect.Parameters["World"].SetValue(parentMatrix * transforms[mesh.ParentBone.Index]);
+            effect.Parameters["World"].SetValue(transforms[mesh.ParentBone.Index] * parentMatrix);
 
             mesh.Draw();
         }
