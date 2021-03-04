@@ -18,10 +18,46 @@ float3 Ambient;
 float3 CameraPosition;
 float Time;
 
+Texture2D UnderwaterTex;
+sampler2D UnderwaterTextureSampler = sampler_state
+{
+    Texture = <UnderwaterTex>;
+    MipFilter = LINEAR;
+    MinFilter = ANISOTROPIC;
+    MagFilter = ANISOTROPIC;
+};
+
 Texture2D DirtTex;
 sampler2D DirtTextureSampler = sampler_state
 {
     Texture = <DirtTex>;
+    MipFilter = LINEAR;
+    MinFilter = ANISOTROPIC;
+    MagFilter = ANISOTROPIC;
+};
+
+Texture2D GrassTex;
+sampler2D GrassTextureSampler = sampler_state
+{
+    Texture = <GrassTex>;
+    MipFilter = LINEAR;
+    MinFilter = ANISOTROPIC;
+    MagFilter = ANISOTROPIC;
+};
+
+Texture2D RockTex;
+sampler2D RockTextureSampler = sampler_state
+{
+    Texture = <RockTex>;
+    MipFilter = LINEAR;
+    MinFilter = ANISOTROPIC;
+    MagFilter = ANISOTROPIC;
+};
+
+Texture2D SnowTex;
+sampler2D SnowTextureSampler = sampler_state
+{
+    Texture = <SnowTex>;
     MipFilter = LINEAR;
     MinFilter = ANISOTROPIC;
     MagFilter = ANISOTROPIC;
@@ -68,22 +104,44 @@ VertexShaderOutput MainVS( float4 position : POSITION, float4 color : COLOR0, fl
 // Pixel Shader, receives input from vertex shader, and outputs to COLOR semantic
 float4 MainPS(VertexShaderOutput input) : COLOR
 {
-    // Sample texure
-    float3 dirtFar = tex2D(DirtTextureSampler, input.tex / 2).rgb;
-    float3 dirt = tex2D(DirtTextureSampler, input.tex * 2).rgb;
-    float3 dirtClose = tex2D(DirtTextureSampler, input.tex * 50).rgb;
-
     float d = distance(input.worldPos, CameraPosition);
 
-    float lerp1 = lerp (dirtClose, dirt, clamp(d / 250, 0, 1));
+    // Sample texures
+    float3 waterFar = tex2D(UnderwaterTextureSampler, input.tex * 4).rgb;
+    float3 waterClose = tex2D(UnderwaterTextureSampler, input.tex * 25).rgb;
+    float3 water = lerp(waterClose, waterFar, clamp(d / 250, 0, 1));
 
-    float3 texColor = lerp(lerp1, dirtFar, clamp((d - 500) / 500, 0, 1));
+    float3 dirtFar = tex2D(DirtTextureSampler, input.tex * 4).rgb;
+    float3 dirtClose = tex2D(DirtTextureSampler, input.tex * 25).rgb;
+    float3 dirt = lerp(dirtClose, dirtFar, clamp(d / 250, 0, 1));
+
+    float3 grassFar = tex2D(GrassTextureSampler, input.tex * 4).rgb;
+    float3 grassClose = tex2D(GrassTextureSampler, input.tex * 25).rgb;
+    float3 grass = lerp(grassClose, grassFar, clamp(d / 250, 0, 1));
+
+    float3 rockFar = tex2D(RockTextureSampler, input.tex * 4).rgb;
+    float3 rockClose = tex2D(RockTextureSampler, input.tex * 25).rgb;
+    float3 rock = lerp(rockClose, rockFar, clamp(d / 250, 0, 1));
+
+    float3 snowFar = tex2D(SnowTextureSampler, input.tex * 4).rgb;
+    float3 snowClose = tex2D(SnowTextureSampler, input.tex * 25).rgb;
+    float3 snow = lerp(snowClose, snowFar, clamp(d / 250, 0, 1));
+
+    float wd = clamp((input.worldPos.y - 15) / 2.5, -1, 1) * .5 + .5f;
+    float dg = clamp((input.worldPos.y - 30) / 10, -1, 1) * .5 + .5f;
+    float gr = clamp((input.worldPos.y - 70) / 10, -1, 1) * .5 + .5f;
+    float rs = clamp((input.worldPos.y - 85) / 10, -1, 1) * .5 + .5f;
+
+    float3 texColor = lerp(lerp(lerp(lerp(water, dirt, wd), grass, dg), rock, gr), snow, rs);
 
     // Lighting calculation
     float3 lighting = max( dot(input.normal, LightDirection), 0.0) + Ambient;
 
+    float fogAmount = pow(clamp((d - 100) / 800, 0, 1), 2);
+    float3 fogColor = float3(188, 214, 231) / 255.0;
+
     // Output
-    return float4(texColor * lighting, 1);
+    return float4(lerp(texColor * lighting, fogColor, fogAmount), 1);
 }
 
 VertexShaderOutput SkyVS(float4 position : POSITION, float3 normal : NORMAL, float2 tex : TEXCOORD0)
