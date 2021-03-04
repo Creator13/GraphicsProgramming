@@ -13,6 +13,18 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin heightmap/heightmap.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:heightmap/heightmap.png
+
 #begin Lesson3/2k_moon.jpg
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -116,6 +128,12 @@
 /processorParam:DebugMode=Auto
 /build:shader/live3.fx
 
+#begin shader/live4.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:shader/live4.fx
+
 #begin texture/crate.jpg
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -151,4 +169,16 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:texture/crateSpecular.png
+
+#begin texture/dirt_diff.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:texture/dirt_diff.jpg
 
