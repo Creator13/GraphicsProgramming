@@ -11,7 +11,20 @@ namespace GraphicsProgramming
 class Lesson4 : Lesson
 {
     private Effect effect;
-    private Texture2D heightmap, underwater, dirt, grass, rock, snow, plant, dirt_norm, dirt_spec, water, foam, waterNormal;
+
+    private Texture2D heightmap,
+        underwater,
+        dirt,
+        grass,
+        rock,
+        snow,
+        plant,
+        dirt_norm,
+        dirt_spec,
+        water,
+        foam,
+        waterNormal;
+
     private TextureCube sky;
     private Model cube, sphere;
 
@@ -55,6 +68,8 @@ class Lesson4 : Lesson
     Quaternion cameraRotation = Quaternion.Identity;
     float yaw, pitch;
 
+    private RenderTarget2D rt;
+
     public override void Initialize()
     {
         mouseX = Mouse.GetState().X;
@@ -92,6 +107,10 @@ class Lesson4 : Lesson
         }
 
         GeneratePlane(2, 600);
+
+        rt = new RenderTarget2D(graphics.GraphicsDevice, graphics.PreferredBackBufferWidth,
+            graphics.PreferredBackBufferHeight, false, graphics.PreferredBackBufferFormat,
+            graphics.PreferredDepthStencilFormat);
     }
 
     private void GeneratePlane(float gridSize = 8.0f, float height = 128f)
@@ -231,6 +250,9 @@ class Lesson4 : Lesson
     public override void Draw(GameTime gameTime, GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
     {
         GraphicsDevice device = graphics.GraphicsDevice;
+
+        device.SetRenderTarget(rt);
+
         device.Clear(Color.Black);
 
         float r = (float) gameTime.TotalGameTime.TotalSeconds;
@@ -275,20 +297,30 @@ class Lesson4 : Lesson
         device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertices, 0, vertices.Length, indices, 0,
             indices.Length / 3);
 
+        device.SetRenderTarget(null);
+
+        // Render rt to screenbuffer
+        spriteBatch.Begin();
+        spriteBatch.Draw(rt, Vector2.Zero, Color.White);
+        spriteBatch.End();
+
+        // Set rt as shader variable
+
         // Render sphere with transparent technique
         // device.BlendState = BlendState.AlphaBlend;
         effect.CurrentTechnique = effect.Techniques["UnlitTransparent"];
-        
-        effect.Parameters["GrassTex"].SetValue(plant);
-        
+
+        effect.Parameters["GrassTex"].SetValue(rt);
+
         device.RasterizerState = RasterizerState.CullNone;
+        device.DepthStencilState = DepthStencilState.Default;
         RenderModel(sphere,
             World * Matrix.CreateTranslation(Vector3.Right * 512 - Vector3.Forward * 512 + Vector3.Up * 200));
-        
+
         // device.RasterizerState = RasterizerState.CullCounterClockwise;
         // RenderModel(sphere,
         //     World * Matrix.CreateTranslation(Vector3.Right * 512 - Vector3.Forward * 512 + Vector3.Up * 200));
-        
+
         device.BlendState = BlendState.Opaque;
         device.RasterizerState = RasterizerState.CullCounterClockwise;
     }
