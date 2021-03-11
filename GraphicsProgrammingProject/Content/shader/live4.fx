@@ -85,6 +85,7 @@ struct VertexShaderOutput {
     float3 texCube : TEXCOORD3;
     float3 binormal : TEXCOORD4;
     float3 tangent : TEXCOORD5;
+    float3 objectPos : TEXCOORD6;
 };
 
 // Vertex shader, receives values directly from semantic channels
@@ -97,6 +98,7 @@ VertexShaderOutput MainVS( float4 position : POSITION, float4 color : COLOR0, fl
     o.normal = mul(normal, (float3x3)World);
     o.tex = tex;
     o.worldPos = mul(position, World);
+    o.objectPos = position;
 
     return o;
 }
@@ -175,10 +177,36 @@ float4 UnlitTransparentPS(VertexShaderOutput input) : COLOR
 {
     float4 texColor = tex2D(GrassTextureSampler, input.tex);
 
-    clip (texColor.a - .5);
-
     return texColor;
 }
+
+float4 HeatDistortion(VertexShaderOutput input, float2 uv : VPOS) : COLOR 
+{
+    // Hardcode screen res: 1280x720
+    uv = (uv + 0.5) * float2(1.0 / 1280.0, 1.0 / 720.0);
+
+#if OPENGL
+    uv.y = 1 - uv.y;
+#endif
+
+    float2 normal = tex2D(UnderwaterTextureSampler, input.tex + float2(0, Time));
+    normal = (normal - 0.5) * 2;
+
+    uv += (normal * 0.01) * (-input.objectPos.z * .5 + .5);
+
+    float4 screenColor = tex2D(GrassTextureSampler, uv);
+
+    return 1- screenColor;
+}
+
+technique HeatDistort
+{
+    pass
+    {
+        VertexShader = compile VS_SHADERMODEL MainVS();
+        PixelShader = compile PS_SHADERMODEL HeatDistortion();
+    }
+};
 
 technique UnlitTransparent
 {

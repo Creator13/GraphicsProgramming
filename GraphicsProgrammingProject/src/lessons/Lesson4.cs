@@ -69,6 +69,8 @@ class Lesson4 : Lesson
     float yaw, pitch;
 
     private RenderTarget2D rt;
+    private Texture2D backbuffer;
+    private Color[] backbufferPixels;
 
     public override void Initialize()
     {
@@ -86,8 +88,8 @@ class Lesson4 : Lesson
         rock = Content.Load<Texture2D>("texture/rock");
         snow = Content.Load<Texture2D>("texture/snow");
         plant = Content.Load<Texture2D>("texture/plant");
-        // sky = Content.Load<TextureCube>("testcube");
-
+        waterNormal = Content.Load<Texture2D>("texture/waternormal");
+        
         sphere = Content.Load<Model>("Lesson3/uv_sphere");
         foreach (ModelMesh mesh in sphere.Meshes)
         {
@@ -111,6 +113,11 @@ class Lesson4 : Lesson
         rt = new RenderTarget2D(graphics.GraphicsDevice, graphics.PreferredBackBufferWidth,
             graphics.PreferredBackBufferHeight, false, graphics.PreferredBackBufferFormat,
             graphics.PreferredDepthStencilFormat);
+
+        backbuffer = new Texture2D(graphics.GraphicsDevice, graphics.PreferredBackBufferWidth,
+            graphics.PreferredBackBufferHeight, false, graphics.PreferredBackBufferFormat);
+
+        backbufferPixels = new Color[graphics.PreferredBackBufferWidth * graphics.PreferredBackBufferHeight];
     }
 
     private void GeneratePlane(float gridSize = 8.0f, float height = 128f)
@@ -251,7 +258,7 @@ class Lesson4 : Lesson
     {
         GraphicsDevice device = graphics.GraphicsDevice;
 
-        device.SetRenderTarget(rt);
+        // device.SetRenderTarget(rt);
 
         device.Clear(Color.Black);
 
@@ -267,6 +274,8 @@ class Lesson4 : Lesson
         effect.Parameters["World"].SetValue(World);
         effect.Parameters["View"].SetValue(View);
         effect.Parameters["Projection"].SetValue(Projection);
+        
+        effect.Parameters["Time"].SetValue(r);
 
         // Lighting Parameters
         effect.Parameters["LightDirection"].SetValue(Vector3.Normalize(Vector3.Down + Vector3.Right * 2));
@@ -299,18 +308,18 @@ class Lesson4 : Lesson
 
         device.SetRenderTarget(null);
 
-        // Render rt to screenbuffer
-        spriteBatch.Begin();
-        spriteBatch.Draw(rt, Vector2.Zero, Color.White);
-        spriteBatch.End();
+        // Copy backbuffer to Texture2D
+        device.GetBackBufferData(backbufferPixels);
+        backbuffer.SetData(backbufferPixels);
 
         // Set rt as shader variable
 
         // Render sphere with transparent technique
         // device.BlendState = BlendState.AlphaBlend;
-        effect.CurrentTechnique = effect.Techniques["UnlitTransparent"];
+        effect.CurrentTechnique = effect.Techniques["HeatDistort"];
 
-        effect.Parameters["GrassTex"].SetValue(rt);
+        effect.Parameters["GrassTex"].SetValue(backbuffer);
+        effect.Parameters["UnderwaterTex"].SetValue(waterNormal);
 
         device.RasterizerState = RasterizerState.CullNone;
         device.DepthStencilState = DepthStencilState.Default;
