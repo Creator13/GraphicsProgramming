@@ -116,6 +116,12 @@
 /processorParam:TextureFormat=Compressed
 /build:Lesson3/uv_sphere.fbx
 
+#begin shader/fxaa.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:shader/fxaa.fx
+
 #begin shader/live2.fx
 /importer:EffectImporter
 /processor:EffectProcessor

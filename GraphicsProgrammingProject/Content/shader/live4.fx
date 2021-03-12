@@ -196,7 +196,7 @@ float4 HeatDistortion(VertexShaderOutput input, float2 uv : VPOS) : COLOR
 
     float4 screenColor = tex2D(GrassTextureSampler, uv);
 
-    return 1- screenColor;
+    return screenColor;
 }
 
 technique HeatDistort
