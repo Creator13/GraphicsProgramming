@@ -315,41 +315,42 @@ class Lesson6 : Lesson
         device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertices, 0, vertices.Length, indices, 0,
             indices.Length / 3);
 
-        device.SetRenderTarget(null);
+        // device.SetRenderTarget(null);
 
-        // Copy backbuffer to Texture2D
-        device.GetBackBufferData(backbufferPixels);
-        backbuffer.SetData(backbufferPixels);
-
-        // Set rt as shader variable
-
-        // Render sphere with transparent technique
-        // device.BlendState = BlendState.AlphaBlend;
-        effect.CurrentTechnique = effect.Techniques["HeatDistort"];
-
-        effect.Parameters["GrassTex"].SetValue(backbuffer);
-        effect.Parameters["UnderwaterTex"].SetValue(waterNormal);
-
-        device.RasterizerState = RasterizerState.CullNone;
-        device.DepthStencilState = DepthStencilState.Default;
-        RenderModel(sphere,
-            World * Matrix.CreateTranslation(Vector3.Right * 512 - Vector3.Forward * 512 + Vector3.Up * 200));
-
-        // device.RasterizerState = RasterizerState.CullCounterClockwise;
+        // // Copy backbuffer to Texture2D
+        // device.GetBackBufferData(backbufferPixels);
+        // backbuffer.SetData(backbufferPixels);
+        //
+        // // Set rt as shader variable
+        //
+        // // Render sphere with transparent technique
+        // // device.BlendState = BlendState.AlphaBlend;
+        // effect.CurrentTechnique = effect.Techniques["HeatDistort"];
+        //
+        // effect.Parameters["GrassTex"].SetValue(backbuffer);
+        // effect.Parameters["UnderwaterTex"].SetValue(waterNormal);
+        //
+        // device.RasterizerState = RasterizerState.CullNone;
+        // device.DepthStencilState = DepthStencilState.Default;
         // RenderModel(sphere,
         //     World * Matrix.CreateTranslation(Vector3.Right * 512 - Vector3.Forward * 512 + Vector3.Up * 200));
+        //
+        // // device.RasterizerState = RasterizerState.CullCounterClockwise;
+        // // RenderModel(sphere,
+        // //     World * Matrix.CreateTranslation(Vector3.Right * 512 - Vector3.Forward * 512 + Vector3.Up * 200));
+        //
+        // device.BlendState = BlendState.Opaque;
+        // device.RasterizerState = RasterizerState.CullCounterClockwise;
 
-        device.BlendState = BlendState.Opaque;
-        device.RasterizerState = RasterizerState.CullCounterClockwise;
-
-        // POST PROCESSING
+        // *** POST PROCESSING *** //
         device.GetBackBufferData(backbufferPixels);
         backbuffer.SetData(backbufferPixels);
 
-        spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, postFx);
+        spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, fxaa);
 
         // Do the post fx
-        postFx.CurrentTechnique = postFx.Techniques["GaussianBlur"];
+        fxaa.Parameters["ScreenSize"].SetValue(new Vector2(1280, 720));
+        fxaa.CurrentTechnique = fxaa.Techniques["FXAA"];
         device.SetRenderTarget(rt1);
         spriteBatch.Draw(backbuffer, Vector2.Zero, Color.White);
 
