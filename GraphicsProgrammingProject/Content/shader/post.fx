@@ -7,6 +7,8 @@
 	#define PS_SHADERMODEL ps_4_0_level_9_1
 #endif
 
+float2 ScreenSize;
+
 Texture2D _MainTex;
 sampler2D _MainTexSampler = sampler_state 
 {
@@ -14,7 +16,7 @@ sampler2D _MainTexSampler = sampler_state
 };
 
 float2 convertUV(float2 inputUV) {
-	return inputUV * float2(1.0 / 1280.0, 1.0 / 720.0);
+	return inputUV * float2(1.0 / ScreenSize.x, 1.0 / ScreenSize.y);
 }
 
 float4 InvertPS(float2 uv : VPOS) : COLOR

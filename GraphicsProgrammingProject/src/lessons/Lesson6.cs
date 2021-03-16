@@ -113,17 +113,17 @@ class Lesson6 : Lesson
 
         GeneratePlane(2, 600);
 
-        rt1 = new RenderTarget2D(graphics.GraphicsDevice, 
-            graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight, 
-            false, 
+        rt1 = new RenderTarget2D(graphics.GraphicsDevice,
+            graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight,
+            false,
             graphics.PreferredBackBufferFormat, graphics.PreferredDepthStencilFormat);
-        rt2 = new RenderTarget2D(graphics.GraphicsDevice, 
-            graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight, 
-            false, 
+        rt2 = new RenderTarget2D(graphics.GraphicsDevice,
+            graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight,
+            false,
             graphics.PreferredBackBufferFormat, graphics.PreferredDepthStencilFormat);
 
-        backbuffer = new Texture2D(graphics.GraphicsDevice, 
-            graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight, 
+        backbuffer = new Texture2D(graphics.GraphicsDevice,
+            graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight,
             false, graphics.PreferredBackBufferFormat);
 
         backbufferPixels = new Color[graphics.PreferredBackBufferWidth * graphics.PreferredBackBufferHeight];
@@ -271,7 +271,7 @@ class Lesson6 : Lesson
 
         device.Clear(Color.Black);
 
-        float r = (float) gameTime.TotalGameTime.TotalSeconds;
+        var r = (float) gameTime.TotalGameTime.TotalSeconds;
 
         // Build & Set Matrices
         Matrix World = Matrix.CreateWorld(Vector3.Zero, Vector3.Forward, Vector3.Up);
@@ -315,34 +315,34 @@ class Lesson6 : Lesson
         device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertices, 0, vertices.Length, indices, 0,
             indices.Length / 3);
 
-        // device.SetRenderTarget(null);
+        device.SetRenderTarget(null);
 
-        // // Copy backbuffer to Texture2D
-        // device.GetBackBufferData(backbufferPixels);
-        // backbuffer.SetData(backbufferPixels);
-        //
-        // // Set rt as shader variable
-        //
-        // // Render sphere with transparent technique
-        // // device.BlendState = BlendState.AlphaBlend;
-        // effect.CurrentTechnique = effect.Techniques["HeatDistort"];
-        //
-        // effect.Parameters["GrassTex"].SetValue(backbuffer);
-        // effect.Parameters["UnderwaterTex"].SetValue(waterNormal);
-        //
-        // device.RasterizerState = RasterizerState.CullNone;
-        // device.DepthStencilState = DepthStencilState.Default;
+        // Copy backbuffer to Texture2D
+        device.GetBackBufferData(backbufferPixels);
+        backbuffer.SetData(backbufferPixels);
+
+        // Set rt as shader variable
+
+        // Render sphere with transparent technique
+        // device.BlendState = BlendState.AlphaBlend;
+        effect.CurrentTechnique = effect.Techniques["HeatDistort"];
+
+        effect.Parameters["GrassTex"].SetValue(backbuffer);
+        effect.Parameters["UnderwaterTex"].SetValue(waterNormal);
+
+        device.RasterizerState = RasterizerState.CullNone;
+        device.DepthStencilState = DepthStencilState.Default;
+        RenderModel(sphere,
+            World * Matrix.CreateTranslation(Vector3.Right * 512 - Vector3.Forward * 512 + Vector3.Up * 200));
+
+        // device.RasterizerState = RasterizerState.CullCounterClockwise;
         // RenderModel(sphere,
         //     World * Matrix.CreateTranslation(Vector3.Right * 512 - Vector3.Forward * 512 + Vector3.Up * 200));
-        //
-        // // device.RasterizerState = RasterizerState.CullCounterClockwise;
-        // // RenderModel(sphere,
-        // //     World * Matrix.CreateTranslation(Vector3.Right * 512 - Vector3.Forward * 512 + Vector3.Up * 200));
-        //
-        // device.BlendState = BlendState.Opaque;
-        // device.RasterizerState = RasterizerState.CullCounterClockwise;
 
-        // *** POST PROCESSING *** //
+        device.BlendState = BlendState.Opaque;
+        device.RasterizerState = RasterizerState.CullCounterClockwise;
+
+        // // *** POST PROCESSING *** //
         device.GetBackBufferData(backbufferPixels);
         backbuffer.SetData(backbufferPixels);
 
