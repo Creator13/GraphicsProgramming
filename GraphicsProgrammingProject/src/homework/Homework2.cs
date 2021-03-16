@@ -5,10 +5,13 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace GraphicsProgramming {
-public class Lesson2 : Lesson {
+namespace GraphicsProgrammingProject.Homework
+{
+public class Homework2 : Lesson
+{
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    private struct VertexPositionColorNormal : IVertexType {
+    private struct VertexPositionColorNormal : IVertexType
+    {
         private Vector3 Position;
         private Color Color;
         private Vector3 Normal;
@@ -23,7 +26,8 @@ public class Lesson2 : Lesson {
 
         VertexDeclaration IVertexType.VertexDeclaration => _vertexDeclaration;
 
-        public VertexPositionColorNormal(Vector3 position, Color color, Vector3 normal, Vector2 texture) {
+        public VertexPositionColorNormal(Vector3 position, Color color, Vector3 normal, Vector2 texture)
+        {
             Position = position;
             Color = color;
             Normal = normal;
@@ -31,7 +35,8 @@ public class Lesson2 : Lesson {
         }
     }
 
-    private readonly VertexPositionColorNormal[] vertices = {
+    private readonly VertexPositionColorNormal[] vertices =
+    {
         //FRONT
         new(new Vector3(-1f, 1f, 1f), Color.Red, Vector3.Forward, new Vector2(0, 1)),
         new(new Vector3(1f, -1f, 1f), Color.Red, Vector3.Forward, new Vector2(1, 0)),
@@ -69,7 +74,8 @@ public class Lesson2 : Lesson {
         new(new Vector3(1f, -1f, 1f), Color.Yellow, Vector3.Down, new Vector2(1, 1)),
     };
 
-    private readonly int[] indices = {
+    private readonly int[] indices =
+    {
         //FRONT
         //triangle 1
         0, 1, 2,
@@ -112,15 +118,18 @@ public class Lesson2 : Lesson {
     private Vector3 lightPosition = Vector3.Right * 2 + Vector3.Up * 2 + Vector3.Backward * 2;
     private float ambient;
 
-    public override void LoadContent(ContentManager Content, GraphicsDeviceManager graphics, SpriteBatch spriteBatch) {
-        myEffect = Content.Load<Effect>("shader/live2");
+    public override void LoadContent(ContentManager Content, GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
+    {
+        myEffect = Content.Load<Effect>("shader/homework2");
         crateTexture = Content.Load<Texture2D>("texture/crate");
         crateNormal = Content.Load<Texture2D>("texture/crateNormal");
+        crateSpecular = Content.Load<Texture2D>("texture/crateSpecular");
 
         ambient = .1f;
     }
 
-    public override void Draw(GameTime gameTime, GraphicsDeviceManager graphics, SpriteBatch spriteBatch) {
+    public override void Draw(GameTime gameTime, GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
+    {
         var device = graphics.GraphicsDevice;
 
         var time = (float) gameTime.TotalGameTime.TotalSeconds;
@@ -138,9 +147,11 @@ public class Lesson2 : Lesson {
 
         myEffect.Parameters["MainTex"].SetValue(crateTexture);
         myEffect.Parameters["NormalTex"].SetValue(crateNormal);
+        myEffect.Parameters["SpecularTex"].SetValue(crateSpecular);
 
         myEffect.Parameters["CameraPosition"].SetValue(cameraPos);
         myEffect.Parameters["LightPosition"].SetValue(lightPosition);
+        myEffect.Parameters["Ambient"].SetValue(ambient);
 
         myEffect.CurrentTechnique.Passes[0].Apply();
 

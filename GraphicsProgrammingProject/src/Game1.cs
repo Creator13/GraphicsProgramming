@@ -17,7 +17,7 @@ public class Game1 : Game {
         graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
-        currentLesson = new Lesson2();
+        currentLesson = new Homework2();
     }
 
     protected override void Initialize() {

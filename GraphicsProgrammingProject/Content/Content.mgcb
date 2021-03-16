@@ -122,6 +122,12 @@
 /processorParam:DebugMode=Auto
 /build:shader/fxaa.fx
 
+#begin shader/homework2.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:shader/homework2.fx
+
 #begin shader/live2.fx
 /importer:EffectImporter
 /processor:EffectProcessor
