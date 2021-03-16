@@ -120,12 +120,18 @@ public class Homework2 : Lesson
     private Color lightColor = Color.Red;
     private float ambient = 0;
 
+    private PostProcessing postProcessing;
+
     public override void LoadContent(ContentManager content, GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
     {
         myEffect = content.Load<Effect>("shader/homework2");
         crateTexture = content.Load<Texture2D>("texture/crate");
         crateNormal = content.Load<Texture2D>("texture/crateNormal");
         crateSpecular = content.Load<Texture2D>("texture/crateSpecular");
+
+        postProcessing = new PostProcessing(graphics);
+        postProcessing.AddEffect(content.Load<Effect>("shader/fxaa"));
+        postProcessing.AddTechnique("FXAA", true);
     }
 
     public override void Update(GameTime gameTime)
@@ -165,6 +171,8 @@ public class Homework2 : Lesson
         device.Clear(Color.Black);
         device.DrawUserIndexedPrimitives(
             PrimitiveType.TriangleList, vertices, 0, vertices.Length, indices, 0, indices.Length / 3);
+        
+        postProcessing.Apply(device, spriteBatch);
     }
 }
 }
