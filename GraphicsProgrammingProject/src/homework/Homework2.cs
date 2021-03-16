@@ -116,26 +116,30 @@ public class Homework2 : Lesson
     private Effect myEffect;
     private Texture2D crateTexture, crateNormal, crateSpecular;
     private Vector3 lightPosition = Vector3.Right * 2 + Vector3.Up * 2 + Vector3.Backward * 2;
-    private float ambient;
+    private Vector3 cameraPos = -Vector3.Forward * 10 + Vector3.Up * 5 + Vector3.Right * 5;
+    private Color lightColor = Color.Red;
+    private float ambient = 0;
 
-    public override void LoadContent(ContentManager Content, GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
+    public override void LoadContent(ContentManager content, GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
     {
-        myEffect = Content.Load<Effect>("shader/homework2");
-        crateTexture = Content.Load<Texture2D>("texture/crate");
-        crateNormal = Content.Load<Texture2D>("texture/crateNormal");
-        crateSpecular = Content.Load<Texture2D>("texture/crateSpecular");
+        myEffect = content.Load<Effect>("shader/homework2");
+        crateTexture = content.Load<Texture2D>("texture/crate");
+        crateNormal = content.Load<Texture2D>("texture/crateNormal");
+        crateSpecular = content.Load<Texture2D>("texture/crateSpecular");
+    }
 
-        ambient = .1f;
+    public override void Update(GameTime gameTime)
+    {
+        var time = (float) gameTime.TotalGameTime.TotalSeconds;
+        lightPosition = new Vector3(MathF.Cos(time), 1, MathF.Sin(time)) * 2;
+        
+        ambient = (MathF.Sin(time * .33f) + 1) * .1f + 0.05f;
+        lightColor = Color.Lerp(Color.Red, Color.Blue, (MathF.Sin(time * .2f) + 1) * .5f);
     }
 
     public override void Draw(GameTime gameTime, GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
     {
         var device = graphics.GraphicsDevice;
-
-        var time = (float) gameTime.TotalGameTime.TotalSeconds;
-        lightPosition = new Vector3(MathF.Cos(time), 1, MathF.Sin(time)) * 2;
-
-        var cameraPos = -Vector3.Forward * 10 + Vector3.Up * 5 + Vector3.Right * 5;
 
         var worldMatrix = Matrix.CreateWorld(Vector3.Zero, Vector3.Forward, Vector3.Up);
         var viewMatrix = Matrix.CreateLookAt(cameraPos, Vector3.Zero, Vector3.Up);
@@ -150,7 +154,10 @@ public class Homework2 : Lesson
         myEffect.Parameters["SpecularTex"].SetValue(crateSpecular);
 
         myEffect.Parameters["CameraPosition"].SetValue(cameraPos);
+
         myEffect.Parameters["LightPosition"].SetValue(lightPosition);
+        myEffect.Parameters["LightColor"].SetValue(lightColor.ToVector3());
+
         myEffect.Parameters["Ambient"].SetValue(ambient);
 
         myEffect.CurrentTechnique.Passes[0].Apply();
