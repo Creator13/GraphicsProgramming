@@ -139,6 +139,7 @@ public class Lesson2 : Lesson {
 
         myEffect.Parameters["MainTex"].SetValue(crateTexture);
         myEffect.Parameters["NormalTex"].SetValue(crateNormal);
+        myEffect.Parameters["SpecularTex"].SetValue(crateSpecular);
 
         myEffect.Parameters["CameraPosition"].SetValue(cameraPos);
         myEffect.Parameters["LightPosition"].SetValue(lightPosition);

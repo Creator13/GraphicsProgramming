@@ -1,9 +1,9 @@
 ﻿#if OPENGL
-#define VS_SHADERMODEL vs_3_0
-#define PS_SHADERMODEL ps_3_0
+    #define VS_SHADERMODEL vs_3_0
+    #define PS_SHADERMODEL ps_3_0
 #else
-#define VS_SHADERMODEL vs_4_0_level_9_1
-#define PS_SHADERMODEL ps_4_0_level_9_1
+    #define VS_SHADERMODEL vs_4_0_level_9_1
+    #define PS_SHADERMODEL ps_4_0_level_9_1
 #endif
 
 // External Properties
@@ -69,6 +69,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 {
     float4 texColor = tex2D(MainTextureSampler, input.uv);
     float4 normalColor = tex2D(NormalTextureSampler, input.uv);
+    float4 specularStrength = tex2D(SpecularTextureSampler, input.uv);
 
     float3 perturbedNormal = input.worldNormal;
     perturbedNormal.rg += (normalColor.rg * 2 - 1);
@@ -79,7 +80,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 
     float3 refl = normalize(-reflect(lightDirection, perturbedNormal));
 
-    float specular = pow(max(dot(refl, normalize(viewDirection)), 0.0), 8);
+    float specular = pow(max(dot(refl, normalize(viewDirection)), 0.0), 8) * specularStrength;
 
     float light = max(dot(perturbedNormal, -lightDirection), Ambient);
 

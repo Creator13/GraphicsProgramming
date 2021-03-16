@@ -4,9 +4,6 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GraphicsProgrammingProject.Lessons {
-/**
- * Rotating cube with rainbow colors :)
- */
 public class Lesson1 : Lesson {
     private readonly VertexPositionColor[] vertices = {
         // FRONT
