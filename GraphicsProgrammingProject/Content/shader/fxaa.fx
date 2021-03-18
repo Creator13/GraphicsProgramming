@@ -20,6 +20,8 @@ sampler2D _MainTexSampler = sampler_state
 {
 	Texture = <_MainTex>;
     Filter = LINEAR;
+    AddressU = MIRROR;
+    AddressV = MIRROR;
 };
 
 float2 getInverseScreenSize() {
