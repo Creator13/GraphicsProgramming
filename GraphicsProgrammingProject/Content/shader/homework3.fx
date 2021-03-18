@@ -107,10 +107,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 
     float3 diffuse = lerp(nightColor.rgb, texColor.rgb, light) + cloudsColor.rgb * light;
 
-    float3 reflectedViewDir = reflect(viewDirection, input.worldNormal);
-    float3 skyReflection = texCUBE(SkyTextureSampler, reflectedViewDir).rgb;
-
-    return float4((max(light, 0.15) + specular) * diffuse.rgb + fresnel + skyReflection, 1);
+    return float4((max(light, 0.15) + specular) * diffuse.rgb + fresnel, 1);
 }
 
 float4 MoonPS(VertexShaderOutput input) : COLOR
