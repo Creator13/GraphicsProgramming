@@ -127,10 +127,14 @@ float4 MoonPS(VertexShaderOutput input) : COLOR
 float4 SkyPS(VertexShaderOutput input) : COLOR
 {
     float3 viewDirection = normalize(input.worldPos - CameraPosition);
+    float3 lightDirection = normalize(input.worldPos - LightPosition);
 
     float3 skyColor = texCUBE(SkyTextureSampler, viewDirection).rgb;
 
-    return float4(pow(skyColor, 2), 1);
+    float sun = pow(max(dot(-viewDirection, lightDirection), 0.0), 4096);
+    float3 sunColor = float3(255, 250, 250) / 255.0;
+
+    return float4(pow(skyColor, 2) + sun * sunColor, 1);
 }
 
 technique Earth

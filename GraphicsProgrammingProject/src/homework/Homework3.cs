@@ -148,7 +148,7 @@ public class Homework3 : Lesson
             Matrix.CreateTranslation(Vector3.Down * 8) * Matrix.CreateScale(.0033f) * Matrix.CreateRotationZ(time) *
             worldMatrix);
         
-        // Moon 2
+        // Moon 2 (mars)
         myEffect.CurrentTechnique = myEffect.Techniques["Moon"];
         myEffect.Parameters["MoonTex"].SetValue(mars);
         RenderModel(sphere,
@@ -156,12 +156,12 @@ public class Homework3 : Lesson
             Matrix.CreateRotationZ(time * .8f) * Matrix.CreateRotationX(-25 * (MathF.PI / 180f)) *
             worldMatrix);
         
-        // Moon around moon
+        // Moon around mars
         myEffect.CurrentTechnique = myEffect.Techniques["Moon"];
         myEffect.Parameters["MoonTex"].SetValue(moonmoon);
         RenderModel(sphere,
             Matrix.CreateTranslation(Vector3.Down * 4) * Matrix.CreateScale(.5f) *
-            Matrix.CreateRotationZ(time * 1.5f) * Matrix.CreateRotationY(78 * (MathF.PI / 180f)) *
+            Matrix.CreateRotationZ(time * 1.5f) *
             Matrix.CreateTranslation(Vector3.Down * 19) * Matrix.CreateScale(0.0025f) *
             Matrix.CreateRotationZ(time * .8f) * Matrix.CreateRotationX(-25 * (MathF.PI / 180f)) * 
             worldMatrix);
