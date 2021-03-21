@@ -90,6 +90,13 @@ struct VertexShaderOutput {
     float3 objectPos : TEXCOORD6;
 };
 
+float3 applyFog(float3 input, float distance) {
+    float fogAmount = pow(clamp((distance - 100) / 800, 0, 1), 2);
+    float3 fogColor = float3(188, 214, 231) / 255.0;
+
+    return lerp(input, fogColor, fogAmount);
+}
+
 // Vertex shader, receives values directly from semantic channels
 VertexShaderOutput MainVS( float4 position : POSITION, float4 color : COLOR0, float3 normal : NORMAL, float3 binormal : BINORMAL, float3 tangent : TANGENT, float2 tex : TEXCOORD0 )
 {
@@ -141,11 +148,8 @@ float4 TerrainPS(VertexShaderOutput input) : COLOR
     // Lighting calculation
     float3 lighting = max( dot(input.normal, LightDirection), 0.0) + Ambient;
 
-    float fogAmount = pow(clamp((d - 100) / 800, 0, 1), 2);
-    float3 fogColor = float3(188, 214, 231) / 255.0;
-
     // Output
-    return float4(lerp(texColor * lighting, fogColor, fogAmount), 1);
+    return float4(applyFog(texColor * lighting, d), 1);
 }
 
 VertexShaderOutput SkyVS(float4 position : POSITION, float3 normal : NORMAL, float2 tex : TEXCOORD0)
@@ -186,10 +190,7 @@ float4 UnlitPS(VertexShaderOutput input) : COLOR
 {
     float d = distance(input.worldPos, CameraPosition);
 
-    float fogAmount = pow(clamp((d - 100) / 800, 0, 1), 2);
-    float3 fogColor = float3(188, 214, 231) / 255.0;
-
-    return float4(lerp(BaseColor.rgb, fogColor, fogAmount), BaseColor.a);
+    return float4(applyFog(BaseColor.rgb, d), BaseColor.a);
 }
 
 float4 ClipPS(VertexShaderOutput input) : COLOR
@@ -199,11 +200,8 @@ float4 ClipPS(VertexShaderOutput input) : COLOR
     clip(texColor.a - 0.5);
 
     float d = distance(input.worldPos, CameraPosition);
-    
-    float fogAmount = pow(clamp((d - 100) / 800, 0, 1), 2);
-    float3 fogColor = float3(188, 214, 231) / 255.0;
 
-    return float4(lerp(texColor.rgb, fogColor, fogAmount), 1);
+    return float4(applyFog(texColor.rgb, d), 1);
 }
 
 float4 HeatDistortion(VertexShaderOutput input, float2 uv : VPOS) : COLOR 

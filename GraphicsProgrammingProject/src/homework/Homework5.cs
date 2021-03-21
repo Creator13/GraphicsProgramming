@@ -382,7 +382,7 @@ class Homework5 : Lesson
         device.RasterizerState = RasterizerState.CullNone;
         device.DepthStencilState = DepthStencilState.Default;
         RenderModel(sphere,
-            World * Matrix.CreateTranslation(Vector3.Right * 512 - Vector3.Forward * 512 + Vector3.Up * 200));
+            World * Matrix.CreateTranslation(500, 250, 500));
 
         device.RasterizerState = RasterizerState.CullCounterClockwise;
     }
