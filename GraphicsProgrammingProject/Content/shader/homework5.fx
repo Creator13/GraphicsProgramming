@@ -92,7 +92,7 @@ struct VertexShaderOutput {
 
 float3 applyFog(float3 input, float distance) {
     float fogAmount = pow(clamp((distance - 100) / 800, 0, 1), 2);
-    float3 fogColor = float3(188, 214, 231) / 255.0;
+    float3 fogColor = float3(254, 165, 105) / 255.0;
 
     return lerp(input, fogColor, fogAmount);
 }
@@ -168,8 +168,8 @@ VertexShaderOutput SkyVS(float4 position : POSITION, float3 normal : NORMAL, flo
 
 float4 SkyPS(VertexShaderOutput input) : COLOR
 {
-    float3 topColor = float3(68, 118, 189) / 255.0;
-    float3 bottomColor = float3(188, 214, 231) / 255.0;
+    float3 topColor = float3(21, 34, 79) / 255.0;
+    float3 bottomColor = float3(254, 165, 105) / 255.0;
 
     float3 viewDirection = normalize(input.worldPos - CameraPosition);
 
