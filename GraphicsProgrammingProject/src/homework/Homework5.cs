@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using GraphicsProgrammingProject;
 using GraphicsProgrammingProject.Lessons;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -12,6 +13,7 @@ namespace GraphicsProgramming
 class Homework5 : Lesson
 {
     private Effect effect;
+    private PostProcessing postProcessing;
 
     private Texture2D heightmap,
         underwater,
@@ -139,6 +141,10 @@ class Homework5 : Lesson
             graphics.PreferredBackBufferHeight, false, graphics.PreferredBackBufferFormat);
 
         backbufferPixels = new Color[graphics.PreferredBackBufferWidth * graphics.PreferredBackBufferHeight];
+
+        postProcessing = new PostProcessing(graphics);
+        postProcessing.AddEffect(content.Load<Effect>("shader/fxaa"));
+        postProcessing.AddTechnique("FXAA", true);
     }
 
     private void GeneratePlane(float gridSize = 8.0f, float height = 128f, float grassPercent = 0.007f)
@@ -385,6 +391,8 @@ class Homework5 : Lesson
             World * Matrix.CreateTranslation(500, 250, 500));
 
         device.RasterizerState = RasterizerState.CullCounterClockwise;
+        
+        postProcessing.Apply(device, spriteBatch);
     }
 
     void RenderModel(Model m, Matrix parentMatrix)

@@ -11,7 +11,7 @@ namespace GraphicsProgrammingProject.Homework
 {
 public class Homework6 : Lesson
 {
-       private Effect effect, postFx, fxaa;
+    private Effect effect, postFx, fxaa;
 
     private Texture2D heightmap,
         underwater,
@@ -60,10 +60,11 @@ public class Homework6 : Lesson
         }
     }
 
-    private Lesson6.Vert[] vertices;
+    private Vert[] vertices;
     private int[] indices;
 
     private int mouseX, mouseY;
+    private bool mouseMove = true;
 
     private Vector3 cameraPos = Vector3.Up * 128f;
     private Quaternion cameraRotation = Quaternion.Identity;
@@ -78,22 +79,22 @@ public class Homework6 : Lesson
         mouseY = Mouse.GetState().Y;
     }
 
-    public override void LoadContent(ContentManager Content, GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
+    public override void LoadContent(ContentManager content, GraphicsDeviceManager graphics, SpriteBatch spriteBatch)
     {
-        effect = Content.Load<Effect>("shader/live4");
-        postFx = Content.Load<Effect>("shader/post");
-        fxaa = Content.Load<Effect>("shader/fxaa");
+        effect = content.Load<Effect>("shader/live4");
+        postFx = content.Load<Effect>("shader/post");
+        fxaa = content.Load<Effect>("shader/fxaa");
 
-        heightmap = Content.Load<Texture2D>("heightmap/heightmap");
-        underwater = Content.Load<Texture2D>("texture/sand");
-        dirt = Content.Load<Texture2D>("texture/dirt_diff");
-        grass = Content.Load<Texture2D>("texture/grass");
-        rock = Content.Load<Texture2D>("texture/rock");
-        snow = Content.Load<Texture2D>("texture/snow");
-        plant = Content.Load<Texture2D>("texture/plant");
-        waterNormal = Content.Load<Texture2D>("texture/waternormal");
+        heightmap = content.Load<Texture2D>("heightmap/heightmap");
+        underwater = content.Load<Texture2D>("texture/sand");
+        dirt = content.Load<Texture2D>("texture/dirt_diff");
+        grass = content.Load<Texture2D>("texture/grass");
+        rock = content.Load<Texture2D>("texture/rock");
+        snow = content.Load<Texture2D>("texture/snow");
+        plant = content.Load<Texture2D>("texture/plant");
+        waterNormal = content.Load<Texture2D>("texture/waternormal");
 
-        sphere = Content.Load<Model>("Lesson3/uv_sphere");
+        sphere = content.Load<Model>("Lesson3/uv_sphere");
         foreach (var mesh in sphere.Meshes)
         {
             foreach (var meshPart in mesh.MeshParts)
@@ -102,7 +103,7 @@ public class Homework6 : Lesson
             }
         }
 
-        cube = Content.Load<Model>("Lesson3/cube");
+        cube = content.Load<Model>("Lesson3/cube");
         foreach (var mesh in cube.Meshes)
         {
             foreach (var meshPart in mesh.MeshParts)
@@ -116,7 +117,7 @@ public class Homework6 : Lesson
         postProcessing = new PostProcessing(graphics);
         postProcessing.AddEffect(fxaa);
         postProcessing.AddEffect(postFx);
-        
+
         postProcessing.AddTechnique("FXAA");
     }
 
@@ -127,7 +128,7 @@ public class Homework6 : Lesson
         heightmap.GetData(pixels);
 
         //Generate vertices & indices
-        vertices = new Lesson6.Vert[pixels.Length];
+        vertices = new Vert[pixels.Length];
         indices = new int[heightmap.Width * heightmap.Height * 6];
 
         // for loops
@@ -149,7 +150,7 @@ public class Homework6 : Lesson
                 }
 
                 // add vertex for current
-                vertices[index] = new Lesson6.Vert(
+                vertices[index] = new Vert(
                     new Vector3(gridSize * x, r, gridSize * y),
                     Vector3.Up, Vector3.Up, Vector3.Up,
                     new Vector2(x / (float) heightmap.Width, y / (float) heightmap.Height)
@@ -231,29 +232,48 @@ public class Homework6 : Lesson
             cameraPos += delta * speed * Vector3.Transform(Vector3.Down, cameraRotation);
         }
 
+        // Toggle mouse movement
+        if (keyState.IsKeyDown(Keys.Space) && !oldKeyState.IsKeyDown(Keys.Space))
+        {
+            mouseMove = !mouseMove;
+        }
+
         if (keyState.IsKeyDown(Keys.D1) && !oldKeyState.IsKeyDown(Keys.D1))
         {
             postProcessing.ToggleTechnique("FXAA");
         }
+
         if (keyState.IsKeyDown(Keys.D2) && !oldKeyState.IsKeyDown(Keys.D2))
         {
             postProcessing.ToggleTechnique("Invert");
         }
 
+        if (keyState.IsKeyDown(Keys.D3) && !oldKeyState.IsKeyDown(Keys.D3))
+        {
+            postProcessing.ToggleTechnique("CA");
+        }
+        if (keyState.IsKeyDown(Keys.D4) && !oldKeyState.IsKeyDown(Keys.D4))
+        {
+            postProcessing.ToggleTechnique("GaussianBlur");
+        }
+
         oldKeyState = keyState;
 
         var mState = Mouse.GetState();
-        var deltaX = mState.X - mouseX;
-        var deltaY = mState.Y - mouseY;
+        if (mouseMove)
+        {
+            var deltaX = mState.X - mouseX;
+            var deltaY = mState.Y - mouseY;
 
-        var sensitivity = 0.01f;
+            var sensitivity = 0.01f;
 
-        yaw -= deltaX * sensitivity;
-        pitch -= deltaY * sensitivity;
+            yaw -= deltaX * sensitivity;
+            pitch -= deltaY * sensitivity;
 
-        pitch = Math.Clamp(pitch, -MathF.PI * .5f, MathF.PI * .5f);
+            pitch = Math.Clamp(pitch, -MathF.PI * .5f, MathF.PI * .5f);
 
-        cameraRotation = Quaternion.CreateFromYawPitchRoll(yaw, pitch, 0);
+            cameraRotation = Quaternion.CreateFromYawPitchRoll(yaw, pitch, 0);
+        }
 
         mouseX = mState.X;
         mouseY = mState.Y;

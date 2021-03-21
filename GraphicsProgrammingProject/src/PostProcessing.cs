@@ -73,6 +73,7 @@ public class PostProcessing
         
         if (index < 0)
         {
+            // When the technique is not yet registered, it's safest to add it add the start where the order matters least.
             AddTechniqueAtStart(name, true);
             return;
         }

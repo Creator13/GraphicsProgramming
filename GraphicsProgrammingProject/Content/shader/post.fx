@@ -37,9 +37,9 @@ technique Invert
 
 float4 ChromaticAberrationPS(float2 uv : VPOS) : COLOR
 {
-	uv = convertUV(uv);
+	uv = (uv) * float2(1.0 / 1280.0, 1.0 / 720.0);
 
-	float strength = 1;
+	float strength = 5;
 	float3 rgbOffset = 1 + float3(0.01, 0.005, 0) * strength;
 	float dist = distance(uv, float2(0.5, 0.5));
 	float2 dir = uv - float2(0.5, 0.5);
